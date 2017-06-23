@@ -23,6 +23,11 @@
 * [判断文档是否加载完](blog/js/32.md)
 * [什么时候你不能使用箭头函数？](blog/js/33.md)
 * [继承的方法](blog/js/34.md)
+* [阅读 jquery api 文档了解到](blog/js/1.md)
+* [js mvc](blog/js/2.md)
+* [json](blog/js/3.md)
+* [js 设计模式](blog/js/6.md)
+* [js 数组去重](blog/js/12.md)
 
 
 ### css
@@ -45,6 +50,8 @@
 * [canvas 基础](blog/html/35.md)
 * [canvas 优化](blog/html/36.md)
 * [defer async 区别](blog/html/42.md)
+* [语义化](blog/html/1.md)
+* [src vs href](blog/html/2.md)
 
 ### python
 * [`if __name__ == "__main__"` 是用来干嘛的](blog/python/1.md)
