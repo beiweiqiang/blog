@@ -42,6 +42,7 @@
 * [响应式布局](blog/css/41.md)
 * [清除浮动](blog/css/1.md)
 * [inline-block 问题](blog/css/2.md)
+* [媒体查询](blog/css/3.md)
 
 ### html
 * [doctype有什么作用？标准模式和混杂模式？](blog/html/6.md)
@@ -52,6 +53,12 @@
 * [defer async 区别](blog/html/42.md)
 * [语义化](blog/html/1.md)
 * [src vs href](blog/html/2.md)
+
+### git
+* [基础使用](blog/git/1.md)
+
+### webpack
+* [指南](blog/webpack/1.md)
 
 ### python
 * [`if __name__ == "__main__"` 是用来干嘛的](blog/python/1.md)
