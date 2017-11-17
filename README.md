@@ -1,5 +1,6 @@
-## 读书笔记
+## read
 * [高程三](read-note/1.md)
+* [Node.js the Right Way](read-note/Nodejs-the-Right-Way.md)
 
 ## blog
 
