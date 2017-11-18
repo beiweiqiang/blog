@@ -66,7 +66,7 @@
 * [在函数里使用另一个函数里创建的全局变量](blog/python/2.md)
 
 ### yarn
-* [yarn vs npm]('blog/yarn/yarn-vs-npm.md')
+* [yarn vs npm](blog/yarn/yarn-vs-npm.md)
 
 ### 其它
 * [GET 和 POST](blog/else/3.md)
