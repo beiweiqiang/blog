@@ -68,6 +68,9 @@
 ### yarn
 * [yarn vs npm](blog/yarn/yarn-vs-npm.md)
 
+### shell
+* [zsh: ./test.sh: bad interpreter: /bin/bash^M: no such file or directory](blog/shell/1.md)
+
 ### 其它
 * [GET 和 POST](blog/else/3.md)
 * [从输入url到页面展示](blog/else/12.md)
