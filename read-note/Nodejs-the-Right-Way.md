@@ -308,3 +308,253 @@ Unix sockets 比 TCP sockets 更快, 因为他不需要调用网络硬件, 不�
 
 我们还需要创建client程序, 接受和解释messages.
 
+### Creating Socket Client Connections
+
+```js
+"use strict";
+const
+  net = require('net'),
+  client = net.connect({
+    port: 5432
+  });
+client.on('data', function (data) {
+  let message = JSON.parse(data);
+  if (message.type === 'watching') {
+    console.log("Now watching: " + message.file);
+  } else if (message.type === 'changed') {
+    let date = new Date(message.timestamp);
+    console.log("File '" + message.file + "' changed at " + date);
+  } else {
+    throw Error("Unrecognized message type: " + message.type);
+  }
+});
+```
+
+`client` 对象是一个 Socket, 就好像 `server` 中的 `connection`.
+
+### Testing Network Application Functionality
+
+我们需要对 server 和 client 进行功能测试.
+
+#### Understanding the Message-Boundary Problem
+
+最好的情况下, 消息会一次性全部抵达. 不过有时候, 消息会分批抵达, 分块在 `data` 事件中.
+
+在上面的 client 代码中, `let message = JSON.parse(data);` 会解析一个data对象, 但是如果接收到的data对象是一段一段的, 比如:
+
+![img](http://oe3zwqfm1.bkt.clouddn.com/F77D9F6D91CB154531B40E2482861294.jpg)
+
+#### Implementing a Test Service
+
+我们需要建立一个测试服务提供这种 split input 情况
+
+```js
+"use strict";
+const
+  net = require('net'),
+  server = net.createServer(function (connection) {
+    console.log('Subscriber connected');
+    // send the first chunk immediately
+    connection.write(
+      '{"type":"changed","file":"targ'
+    );
+    // after a one second delay, send the other chunk
+    let timer = setTimeout(function () {
+      connection.write('et.txt","timestamp":1358175758495}' + "\n");
+      connection.end();
+    }, 1000);
+    // clear timer when the connection ends
+    connection.on('end', function () {
+      clearTimeout(timer);
+      console.log('Subscriber disconnected');
+    });
+  });
+server.listen(5432, function () {
+  console.log('Test server listening for subscribers...');
+});
+```
+
+### Extending Core Classes in Custom Modules
+
+上面的错误情况, 是因为 client 没有缓存他的输入.
+
+所以 client 应该有两个任务, 一个是缓存来的数据, 一个是处理到达的消息.
+
+#### Extending EventEmitter
+
+##### Inheritance in Node
+
+```js
+const
+  events = require('events'),
+  util = require('util'),
+  // client constructor
+  LDJClient = function (stream) {
+    events.EventEmitter.call(this);
+  };
+util.inherits(LDJClient, events.EventEmitter);
+```
+
+LDJClient 是一个构造函数, 可以调用 `new LDJClient(stream)` 得到一个实例. `stream` 参数是一个对象, 可以 emit data事件, 比如一个 `Socket` 连接.
+
+`events.EventEmitter.call(this);` 相当于 `super();`
+
+#### Buffering Data Events
+
+缓存数据
+
+```js
+LDJClient = function (stream) {
+  events.EventEmitter.call(this);
+  let
+    self = this,
+    buffer = '';
+  stream.on('data', function (data) {
+    buffer += data;
+    let boundary = buffer.indexOf('\n');
+    while (boundary !== -1) {
+      let input = buffer.substr(0, boundary);
+      buffer = buffer.substr(boundary + 1);
+      self.emit('message', JSON.parse(input));
+      boundary = buffer.indexOf('\n');
+    }
+  });
+};
+```
+
+#### Exporting Functionality in a Module
+
+```js
+"use strict";
+const
+  events = require('events'),
+  util = require('util'),
+  // client constructor
+  LDJClient = function (stream) {
+    events.EventEmitter.call(this);
+    let
+      self = this,
+      buffer = '';
+    stream.on('data', function (data) {
+      buffer += data;
+      let boundary = buffer.indexOf('\n');
+      while (boundary !== -1) {
+        let input = buffer.substr(0, boundary);
+        buffer = buffer.substr(boundary + 1);
+        self.emit('message', JSON.parse(input));
+        boundary = buffer.indexOf('\n');
+      }
+    });
+  };
+util.inherits(LDJClient, events.EventEmitter);
+
+// expose module methods
+exports.LDJClient = LDJClient;
+exports.connect = function (stream) {
+  return new LDJClient(stream);
+};
+```
+
+`exports` 是两个模块之间的桥梁.
+
+在 `exports` 上的属性可以再其它模块中使用.
+
+在其它模块中可以这样调用:
+```js
+const
+  ldj = require('./ldj.js'),
+  client = ldj.connect(networkStream);
+client.on('message', function (message) {
+  // take action for this message
+});
+```
+
+#### Importing a Custom Node Module
+
+```js
+"use strict";
+const
+  net = require('net'),
+  ldj = require('./ldj.js'),
+
+  netClient = net.connect({
+    port: 5432
+  }),
+  ldjClient = ldj.connect(netClient);
+
+ldjClient.on('message', function (message) {
+  if (message.type === 'watching') {
+    console.log("Now watching: " + message.file);
+  } else if (message.type === 'changed') {
+    console.log(
+      "File '" + message.file + "' changed at " + new Date(message.timestamp)
+    );
+  } else {
+    throw Error("Unrecognized message type: " + message.type);
+  }
+});
+```
+
+### Wrapping Up
+
+目标是让代码 more testable, more robust, and more modular
+
+在之前的server代码中, 每来一个connection, 就新建了一个watcher, 如果来了很多个connection, 就会新建很多个watcher. 如何从请求的连接中将watcher解耦出来?
+
+自己写了一个sample:
+```js
+const fs = require('fs');
+const net = require('net');
+const resolve = require('path').resolve;
+const filename = resolve(__dirname, process.argv[2]);
+
+function Wather(fileName) {
+  this.fileName = fileName;
+  this.connectionArray = [];
+  this.notify = fs.watchFile(fileName, { interval: 500 }, function () {
+    this.connectionArray.map(function (item, index) {
+      item.write(JSON.stringify({
+        type: 'changed',
+        file: fileName,
+        timestamp: Date.now()
+      }) + '\n');  
+    }, this);
+  }.bind(this));
+}
+Wather.prototype.addConnection = function (connection) {
+  this.connectionArray.push(connection);
+  connection.write(JSON.stringify({
+    type: 'watching',
+    file: this.fileName
+  }) + '\n');
+};
+Wather.prototype.removeConnection = function (connection) {
+  const index = this.connectionArray.indexOf(connection);
+  this.connectionArray.splice(index, 1);
+};
+
+const watcher = new Wather(filename);
+
+const server = net.createServer(function (connection) {
+  console.log('Subscriber connected.');
+  watcher.addConnection(connection);
+  connection.on('close', function () {
+    console.log('Subscriber disconnected.');
+    watcher.removeConnection(connection);
+  });
+});
+if (!filename) {
+  throw Error('No target filename was specified.');
+}
+server.listen(5432, function () {
+  console.log('Listening for subscribers...');
+});
+process.on('SIGINT', () => {
+  server.close();
+  process.exit();
+});
+```
+
+## Robust Messaging Services
+
+
