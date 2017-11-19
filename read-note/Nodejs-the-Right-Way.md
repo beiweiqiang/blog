@@ -557,4 +557,143 @@ process.on('SIGINT', () => {
 
 ## Robust Messaging Services
 
+在这章中我们会使用第三方库, npm包 Zero-M-Q, 
+
+### Advantages of ØMQ
+
+### Importing External Modules with npm
+
+模块可以通过纯就JavaScript编写, 也可以使用JavaScript联合其他语言, 依附语言通过对象动态联系起来.
+
+### Message-Publishing and -Subscribing
+
+#### Publishing Messages over TCP
+
+使用 zeromq 编写一个 sub
+```js
+'use strict';
+const
+  fs = require('fs'),
+  zmq = require('zeromq'),
+  // create publisher endpoint
+  publisher = zmq.socket('pub'),
+  resolve = require('path').resolve,
+  filename = resolve(__dirname, process.argv[2]);
+
+fs.watch(filename, function () {
+  // send message to any subscribers
+  publisher.send(JSON.stringify({
+    type: 'changed',
+    file: filename,
+    timestamp: Date.now()
+  }));
+});
+// listen on TCP port 5432
+publisher.bind('tcp://*:5432', function (err) {
+  console.log('Listening for zmq subscribers...');
+});
+```
+
+#### Subscribing to a Publisher
+```js
+"use strict";
+const
+  zmq = require('zeromq'),
+  // create subscriber endpoint
+  subscriber = zmq.socket('sub'); // subscribe to all messages
+subscriber.subscribe("");
+// handle messages from publisher
+subscriber.on("message", function (data) {
+  let
+    message = JSON.parse(data),
+    date = new Date(message.timestamp);
+  console.log("File '" + message.file + "' changed at " + date);
+});
+// connect to publisher
+subscriber.connect("tcp://localhost:5432");
+```
+
+#### Automatically Reconnecting Endpoints
+
+一个终端跑 pub.js, 另一个终端跑 sub.js, 现象和之前一样.
+
+这里有一个神奇的现象, 我们kill掉 pub.js 以后, sub 没有发生任何变化, 
+
+zeromq 中, 不关心哪一端先启动.
+
+在我们的代码里, publisher 绑定一个TCP socket, subscriber 连接, 不过 zeromq 不限制如此, 你也可以反转他们, subscriber 绑定一个 socket 而 publisher 进行连接.
+
+在实际的应用中, 稳定的部分通常作为绑定的一方, 而短暂的部分通常作为进行连接的一方.
+
+### Responding to Requests
+
+REQ/REP(request/reply) 模式.
+
+在 zeromq 中, REQ/REP 模式是进行锁步式的交流, request 来了, 会放进队列里, 一次只会 reply 一个 request, 也就是说, 应用同一时间只会处理一个 request.
+
+#### Implementing a Responder
+
+```js
+'use strict';
+const
+  fs = require('fs'),
+  zmq = require('zeromq'),
+  // socket to reply to client requests
+  responder = zmq.socket('rep');
+// handle incoming requests
+responder.on('message', function (data) {
+
+  // parse incoming message
+  let request = JSON.parse(data);
+  console.log('Received request to get: ' + request.path);
+
+  // read file and reply with content
+  fs.readFile(request.path, function (err, content) {
+    console.log('Sending response content');
+    responder.send(JSON.stringify({
+      content: content.toString(),
+      timestamp: Date.now(),
+      pid: process.pid
+    }));
+  });
+
+});
+
+// listen on TCP port 5433
+responder.bind('tcp://127.0.0.1:5433', function (err) {
+  console.log('Listening for zmq requesters...');
+});
+
+// close the responder when the Node process ends
+process.on('SIGINT', function () {
+  console.log('Shutting down...');
+  responder.close();
+});
+```
+
+#### Issuing Requests
+```js
+"use strict";
+const
+  zmq = require('zeromq'),
+  resolve = require('path').resolve,
+  filename = resolve(__dirname, process.argv[2]),
+  // create request endpoint
+  requester = zmq.socket('req');
+// handle replies from responder
+requester.on("message", function(data) {
+  let response = JSON.parse(data);
+  console.log("Received response:", response);
+});
+requester.connect("tcp://localhost:5433");
+// send request for content
+console.log('Sending request for ' + filename);
+requester.send(JSON.stringify({
+  path: filename
+}));
+```
+
+以上, 监听 message 事件, 与rep socket建立tcp连接, 最后调用 `requester.send()`, 
+
+#### Trading Synchronicity for Scale
 

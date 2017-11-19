@@ -74,6 +74,7 @@
 
 ### node
 * [node 中的路径问题](blog/node/1.md)
+* [express cors 设置跨域](blog/node/2.md)
 
 ### linux
 * [关闭 unix sockets](blog/linux/1.md)
