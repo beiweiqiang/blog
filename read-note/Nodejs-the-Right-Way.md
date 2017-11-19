@@ -71,6 +71,240 @@ fs.watch(resolve(__dirname, filename), function () {
 console.log("Now watching " + filename + " for changes...");
 ```
 
-`spawn()` 返回一个`ChildProcess`, 他的 `stdin`, `stdout`, and `stderr` 属性都是 `Streams`, 可用于读写数据.
+`spawn()` 返回一个`ChildProcess`, 他的 `stdin`, `stdout`, and `stderr` 属性都是 `Streams`, 可用于读写数据, 使用 `pipe()` 输出到标准输出流.
 
+### 从 EventEmitter 中获取数据
+`Stream` 是从 `EventEmitter` 继承而来.
+
+```js
+"use strict";
+const
+  fs = require('fs'),
+  spawn = require('child_process').spawn,
+  filename = process.argv[2],
+  resolve = require('path').resolve;
+if (!filename) {
+  throw Error("A file to watch must be specified!");
+}
+fs.watch(resolve(__dirname, filename), function () {
+  let ls = spawn('ls', ['-lh', resolve(__dirname, filename)]);
+  let output = '';
+
+  ls.stdout.on('data', function (chunk) {
+    output += chunk.toString();
+  });
+
+  ls.on('close', function () {
+    let parts = output.split(/\s+/);
+    console.dir([parts[0], parts[4], parts[8]]);
+  });
+});
+console.log("Now watching " + filename + " for changes...");
+```
+
+以上, 我们给添加了一个事件监听, 一个监听事件是一个回调函数, 当特定的事件类型下发, 回调函数就会被调用.
+
+Buffer 用于在 node 中展示二进制数据. 调用 `.toString()` 用 node 的默认编码方式(UTF-8) 将 buffer 内容转换为 JavaScript 的 String.
+
+### 异步读写文件
+
+读文件:
+```js
+const fs = require('fs');
+const resolve = require('path').resolve;
+
+fs.readFile(resolve(__dirname, 'target.txt'), function (err, data) {
+  console.log(err);
+  if (err) {
+    throw err;
+  }
+  console.log(data.toString());
+});
+```
+
+an uncaught exception in Node 会因为脱离 event loop 而停止程序.
+
+第二个参数 data 是一个 buffer
+
+### 创建读写流
+```js
+const
+  fs = require('fs'),
+  stream = fs.createReadStream(process.argv[2]);
+stream.on('data', function (chunk) {
+  process.stdout.write(chunk);
+});
+stream.on('error', function (err) {
+  process.stderr.write("ERROR: " + err.message + "\n");
+});
+```
+
+### Blocking the Event Loop with Synchronous File Access
+如果node进程被阻塞, 意味着node不会执行其他任何代码, 不会触发回调函数, 不会处理事件, 不会接受任何连接. 
+
+### node 程序的两个阶段
+程序的初始化时期, 可以进行文件的同步读取.
+
+第二个时期是操作时期, 程序进入 event loop, 在这个时期 **绝对不能使用** 同步文件读取.
+
+`require()` 函数是同步进行的. 
+
+## Networking with Sockets
+
+### Listening for Socket Connections
+网络服务做两件事: 连接两端, 传输信息.
+
+#### Binding a Server to a TCP Port
+TCP socket 连接包含两个端点. 一端绑定到数值型端口上, 另一端连接到一个端口.
+
+在node中, 绑定了连接操作由 `net` 模块提供.
+
+绑定一个TCP端口用于监听连接:
+```js
+"use strict";
+const
+  net = require('net'),
+  server = net.createServer(function (connection) {
+    // use connection object for data transfer
+  });
+server.listen(5432);
+```
+
+connection 参数是一个 Socket 对象, 可以用于接收和发送数据.
+
+#### Writing Data to a Socket
+```js
+'use strict';
+const
+  fs = require('fs'),
+  net = require('net'),
+  filename = process.argv[2],
+  server = net.createServer(function (connection) {
+    // reporting
+    console.log('Subscriber connected.');
+    connection.write("Now watching '" + filename + "' for changes...\n");
+    // watcher setup
+    let watcher = fs.watch(filename, function () {
+      connection.write("File '" + filename + "' changed: " + Date.now() + "\n");
+    });
+
+    // cleanup
+    connection.on('close', function () {
+      console.log('Subscriber disconnected.');
+      watcher.close();
+    });
+  });
+if (!filename) {
+  throw Error('No target filename was specified.');
+}
+server.listen(5432, function () {
+  console.log('Listening for subscribers...');
+});
+```
+
+在回调函数中使用 `connection.write` 给客户端发送文件变化.
+
+#### Connecting to a TCP Socket Server with Telnet
+
+通过telnet命令, 连接TCP socket 服务器
+
+```js
+'use strict';
+const
+  fs = require('fs'),
+  net = require('net'),
+  resolve = require('path').resolve,
+  filename = resolve(__dirname, process.argv[2]),
+  server = net.createServer(function (connection) {
+    // reporting
+    console.log('Subscriber connected.');
+    connection.write("Now watching '" + filename + "' for changes...\n");
+    // watcher setup
+    let watcher = fs.watch(filename, function () {
+      connection.write("File '" + filename + "' changed: " + Date.now() + "\n");
+    });
+
+    // cleanup
+    connection.on('close', function () {
+      console.log('Subscriber disconnected.');
+      watcher.close();
+    });
+  });
+if (!filename) {
+  throw Error('No target filename was specified.');
+}
+server.listen(5432, function () {
+  console.log('Listening for subscribers...');
+});
+```
+3个终端:
+1. node test.js target.txt
+2. telnet localhost 5432
+3. vi target.txt
+
+通过 `Ctrl-]` 和 `Ctrl-C` kill telnet, 通过 `Ctrl-C` kill node.
+
+![img](http://oe3zwqfm1.bkt.clouddn.com/3D8A43ED5DAA033EA401903A2E1C10A0.jpg)
+
+TCP sockets 对于网络上的两台计算机之间的交流很有用. 在同一台计算机上的交流, Unix sockets 更高效, `net` 模块也提供这种方式.
+
+#### Listening on Unix Sockets
+
+Unix sockets 只能在 Unix-like 环境下工作.
+
+修改我们之前的代码成:
+```js
+'use strict';
+const
+  fs = require('fs'),
+  net = require('net'),
+  resolve = require('path').resolve,
+  filename = resolve(__dirname, process.argv[2]),
+  server = net.createServer(function (connection) {
+    // reporting
+    console.log('Subscriber connected.');
+    connection.write("Now watching '" + filename + "' for changes...\n");
+    // watcher setup
+    let watcher = fs.watch(filename, function () {
+      connection.write("File '" + filename + "' changed: " + Date.now() + "\n");
+    });
+
+    // cleanup
+    connection.on('close', function () {
+      console.log('Subscriber disconnected.');
+      watcher.close();
+    });
+  });
+if (!filename) {
+  throw Error('No target filename was specified.');
+}
+server.listen('/tmp/watcher.sock', function() {
+  console.log('Listening for subscribers...');
+});
+```
+
+我们此时需要 `nc` 而不是 `telnet`, `nc` 是 `netcat` 的简称, 用于 TCP/UDP socket 也支持 Unix sockets.
+
+```shell
+$ nc -U /tmp/watcher.sock
+```
+
+Unix sockets 比 TCP sockets 更快, 因为他不需要调用网络硬件, 不过只能在本地使用.
+
+### Implementing a Messaging Protocol
+`protocol(协议)` 是端之间进行交流的一系列的规则.
+
+这里我们会使用基于 `JSON` 的协议.
+
+#### 把消息用JSON序列化
+
+我们需要把之前的消息转换为JSON格式, 比如:
+
+字符串 `Now watching target.txt for changes...` -> `{"type":"watching","file":"target.txt"}`
+
+字符串 `File ’target.txt’ changed: Sat Jan 12 2013 12:35:52 GMT-0500 (EST)` -> `{"type":"changed","file":"target.txt","timestamp":1358175733785}`
+
+#### Switching to JSON Messages
+
+我们还需要创建client程序, 接受和解释messages.
 

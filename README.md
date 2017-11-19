@@ -1,6 +1,7 @@
-## read
+## reading
 * [高程三](read-note/1.md)
 * [Node.js the Right Way](read-note/Nodejs-the-Right-Way.md)
+* [design pattern](read-note/design-pattern.md)
 
 ## blog
 
@@ -70,6 +71,12 @@
 
 ### shell
 * [zsh: ./test.sh: bad interpreter: /bin/bash^M: no such file or directory](blog/shell/1.md)
+
+### node
+* [node 中的路径问题](blog/node/1.md)
+
+### linux
+* [关闭 unix sockets](blog/linux/1.md)
 
 ### 其它
 * [GET 和 POST](blog/else/3.md)
