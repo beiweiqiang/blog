@@ -31,6 +31,8 @@
 * [js 设计模式](blog/js/6.md)
 * [js 数组去重](blog/js/12.md)
 
+### DOM
+* [移除指定的DOM元素](blog/dom/35.md)
 
 ### css
 * [左右布局，左边定宽，右边自适应](blog/css/21.md)
@@ -45,6 +47,8 @@
 * [清除浮动](blog/css/1.md)
 * [inline-block 问题](blog/css/2.md)
 * [媒体查询](blog/css/3.md)
+* [暂时禁止用户滚动(scroll)](blog/css/4.md)
+* [禁止用户点击](blog/css/5.md)
 
 ### html
 * [doctype有什么作用？标准模式和混杂模式？](blog/html/6.md)
@@ -78,6 +82,9 @@
 
 ### linux
 * [关闭 unix sockets](blog/linux/1.md)
+
+### mac
+* [mac 下命令行学习](blog/mac/1.md)
 
 ### 其它
 * [GET 和 POST](blog/else/3.md)
