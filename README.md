@@ -30,6 +30,8 @@
 * [json](blog/js/3.md)
 * [js 设计模式](blog/js/6.md)
 * [js 数组去重](blog/js/12.md)
+* [js中的 `==` 和 `===` 的具体算法](blog/js/13.md)
+* [js 值传递? 引用传递?](blog/js/21.md)
 
 ### DOM
 * [移除指定的DOM元素](blog/dom/35.md)
