@@ -32,6 +32,10 @@
 * [js 数组去重](blog/js/12.md)
 * [js中的 `==` 和 `===` 的具体算法](blog/js/13.md)
 * [js 值传递? 引用传递?](blog/js/21.md)
+* [js Iterator](blog/js/22.md)
+* [js Generator](blog/js/23.md)
+* [js async](blog/js/24.md)
+* [js promise](blog/js/35.md)
 
 ### DOM
 * [移除指定的DOM元素](blog/dom/35.md)
@@ -82,6 +86,10 @@
 * [node 中的路径问题](blog/node/1.md)
 * [express cors 设置跨域](blog/node/2.md)
 * [node.js gateway](blog/node/3.md)
+* [util](blog/node/4.md)
+* [timer](blog/node/5.md)
+* [events](blog/node/6.md)
+* [Global Objects](blog/node/7.md)
 
 ### linux
 * [关闭 unix sockets](blog/linux/1.md)
