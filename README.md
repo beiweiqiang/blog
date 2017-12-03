@@ -1,7 +1,10 @@
-## reading
+## 阅读
 * [高程三](read-note/1.md)
 * [Node.js the Right Way](read-note/Nodejs-the-Right-Way.md)
 * [design pattern](read-note/design-pattern.md)
+
+## 生活杂谈
+* [我从 teambition 换到了 滴答清单](life/1.md)
 
 ## blog
 
