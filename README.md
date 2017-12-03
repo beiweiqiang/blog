@@ -97,6 +97,10 @@
 ### mac
 * [mac 下命令行学习](blog/mac/1.md)
 
+### UML
+* [sequence diagram](blog/uml/1.md)
+* [statechart diagram](blog/uml/2.md)
+
 ### 其它
 * [GET 和 POST](blog/else/3.md)
 * [从输入url到页面展示](blog/else/12.md)
@@ -105,8 +109,3 @@
 * [深度 广度 优先遍历](blog/else/29.md)
 * [计算机网络 五层协议 体系结构](blog/else/31.md)
 * [session cookie 区别](blog/else/1.md)
-
-### 面试
-* [自我介绍](interview/1.md)
-* [面试导引](interview/2.md)
-
