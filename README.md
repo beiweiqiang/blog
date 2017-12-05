@@ -7,7 +7,7 @@
 * [我从 teambition 换到了 滴答清单](life/1.md)
 
 ## 讲座
-* [MTH 信息的传递](lecture-node/1.md)
+* [MTH 信息的传递](lecture-note/1.md)
 
 ## blog
 
