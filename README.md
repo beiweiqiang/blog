@@ -6,6 +6,9 @@
 ## 生活杂谈
 * [我从 teambition 换到了 滴答清单](life/1.md)
 
+## 讲座
+* [MTH 信息的传递](lecture-node/1.md)
+
 ## blog
 
 ### js
@@ -39,6 +42,13 @@
 * [js Generator](blog/js/23.md)
 * [js async](blog/js/24.md)
 * [js promise](blog/js/35.md)
+
+### React
+* [react 官网教程里应注意](blog/react/1.md)
+
+### design
+* [状态机](blog/design/1.md)
+
 
 ### DOM
 * [移除指定的DOM元素](blog/dom/35.md)
@@ -93,6 +103,7 @@
 * [timer](blog/node/5.md)
 * [events](blog/node/6.md)
 * [Global Objects](blog/node/7.md)
+* [在express中使用HTML作为view engine](blog/node/8.md)
 
 ### linux
 * [关闭 unix sockets](blog/linux/1.md)
