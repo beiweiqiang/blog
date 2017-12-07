@@ -45,6 +45,8 @@
 
 ### React
 * [react 官网教程里应注意](blog/react/1.md)
+* [redux 官网教程里应注意](blog/react/2.md)
+* [react 坑史](blog/react/3.md)
 
 ### design
 * [状态机](blog/design/1.md)
