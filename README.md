@@ -9,6 +9,10 @@
 ## 讲座
 * [MTH 信息的传递](lecture-note/1.md)
 
+## 设计模式
+
+* [结构性模式 -- 适配器模式](design-pattern/1.md)
+
 ## blog
 
 ### js
@@ -106,6 +110,7 @@
 * [events](blog/node/6.md)
 * [Global Objects](blog/node/7.md)
 * [在express中使用HTML作为view engine](blog/node/8.md)
+* [小众 npm](blog/node/9.md)
 
 ### linux
 * [关闭 unix sockets](blog/linux/1.md)
