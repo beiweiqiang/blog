@@ -11,9 +11,22 @@
 
 ## 设计模式
 
-* [结构性模式 -- 适配器模式](design-pattern/1.md)
+* [结构型模式 -- 适配器模式](design-pattern/1.md)
+* [行为型模式 -- 观察者模式](design-pattern/2.md)
 
 ## blog
+
+### java
+* [JAR 文件](blog/java/2.md)
+* [intelliJ IDEA 编辑器入门](blog/java/1.md)
+* [Java 核心技术 --- Java "白皮书" 关键术语](blog/java/3.md)
+* [JRE 与 JDK](blog/java/5.md)
+* [Java 核心技术 --- Java 程序设计环境](blog/java/4.md)
+* [Java 核心技术 --- Java 的基本程序设计结构](blog/java/6.md)
+* [Java 核心技术 --- 对象与类](blog/java/7.md)
+
+### nginx
+* [nginx 入门](blog/nginx/1.md)
 
 ### js
 * [event handlers](blog/js/4.md)
