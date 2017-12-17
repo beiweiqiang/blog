@@ -16,6 +16,9 @@
 
 ## blog
 
+### vim
+* [vim 的一些删除操作](blog/vim/1.md)
+
 ### java
 * [JAR 文件](blog/java/2.md)
 * [intelliJ IDEA 编辑器入门](blog/java/1.md)
@@ -103,6 +106,7 @@
 
 ### webpack
 * [指南](blog/webpack/1.md)
+* [关于 webpack 的 react 项目优化](blog/webpack/2.md)
 
 ### python
 * [`if __name__ == "__main__"` 是用来干嘛的](blog/python/1.md)
