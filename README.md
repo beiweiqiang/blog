@@ -5,6 +5,7 @@
 
 ## 生活杂谈
 * [我从 teambition 换到了 滴答清单](life/1.md)
+* [2017回顾, 2018展望](plan/1.md)
 
 ## 讲座
 * [MTH 信息的传递](lecture-note/1.md)
@@ -18,6 +19,7 @@
 
 ### vim
 * [vim 的一些删除操作](blog/vim/1.md)
+* [为什么学习 vim](blog/vim/3.md)
 
 ### java
 * [JAR 文件](blog/java/2.md)
@@ -147,4 +149,4 @@
 * [深度 广度 优先遍历](blog/else/29.md)
 * [计算机网络 五层协议 体系结构](blog/else/31.md)
 * [session cookie 区别](blog/else/1.md)
-* [RPC](blog/else.2.md)
+* [RPC](blog/else/2.md)
