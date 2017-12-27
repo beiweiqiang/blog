@@ -29,6 +29,7 @@
 * [Java 核心技术 --- Java 程序设计环境](blog/java/4.md)
 * [Java 核心技术 --- Java 的基本程序设计结构](blog/java/6.md)
 * [Java 核心技术 --- 对象与类](blog/java/7.md)
+* [Java core --- Inheritance](blog/java/8.md)
 
 ### nginx
 * [nginx 入门](blog/nginx/1.md)
