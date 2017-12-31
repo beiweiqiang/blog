@@ -17,6 +17,9 @@
 
 ## blog
 
+### Android
+* [第一行代码 Android](blog/Android/1.md)
+
 ### vim
 * [vim 的一些删除操作](blog/vim/1.md)
 * [为什么学习 vim](blog/vim/3.md)
@@ -30,6 +33,7 @@
 * [Java 核心技术 --- Java 的基本程序设计结构](blog/java/6.md)
 * [Java 核心技术 --- 对象与类](blog/java/7.md)
 * [Java core --- Inheritance](blog/java/8.md)
+* [Java core --- Interfaces, Lambda Expressions, and Inner Classes](blog/java/9.md)
 
 ### nginx
 * [nginx 入门](blog/nginx/1.md)
