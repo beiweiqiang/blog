@@ -22,16 +22,11 @@
 
 ### vim
 * [vim 的一些删除操作](blog/vim/1.md)
-* [为什么学习 vim](blog/vim/3.md)
 * [vim 比较两个文件](blog/vim/4.md)
-
-### aws
-* [setting up node.js on an Amazon EC2 instance](blog/aws/1.md)
 
 ### java
 * [JAR 文件](blog/java/2.md)
 * [intelliJ IDEA 编辑器入门](blog/java/1.md)
-* [Java 核心技术 --- Java "白皮书" 关键术语](blog/java/3.md)
 * [JRE 与 JDK](blog/java/5.md)
 * [Java 核心技术 --- Java 程序设计环境](blog/java/4.md)
 * [Java 核心技术 --- Java 的基本程序设计结构](blog/java/6.md)
@@ -39,9 +34,6 @@
 * [Java core --- Inheritance](blog/java/8.md)
 * [Java core --- Interfaces, Lambda Expressions, and Inner Classes](blog/java/9.md)
 * [Java core --- Exceptions, Assertions, and Logging](blog/java/10.md)
-
-### nginx
-* [nginx 入门](blog/nginx/1.md)
 
 ### js
 * [event handlers](blog/js/4.md)
